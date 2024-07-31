@@ -20,7 +20,7 @@ class DataPipe(object):
 
     # Generates the equivalent Lua code specifying what data the Lua engine should return every time step 
     def get_lua_string(self):
-        return self.pipe.get_lua_string(args=[address.get_lua_string() for address in self.addresses.values()]+['s:bitmap_binary()'])
+        return self.pipe.get_lua_string(args=[address.get_lua_string() for address in self.addresses.values()]+['s:pixels()'])
 
     def read_data(self, timeout=10):
         data = {}

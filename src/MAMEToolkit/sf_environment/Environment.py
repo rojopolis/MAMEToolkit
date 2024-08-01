@@ -181,10 +181,10 @@ class Environment(object):
     # Collects the specified amount of frames the agent requires before choosing an action
     def gather_frames(self, actions):
         data = self.sub_step(actions)
-        frames = [data["frame"]]
+        frames = [strip_alpha_channel(data["frame"])]
         for i in range(self.frames_per_step - 1):
             data = add_rewards(data, self.sub_step(actions))
-            frames.append(data["frame"])
+            frames.append(strip_alpha_channel(data["frame"]))
         data["frame"] = frames[0] if self.frames_per_step == 1 else frames
         return data
 

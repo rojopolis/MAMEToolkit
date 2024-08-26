@@ -20,7 +20,7 @@ class Console(object):
     # render is for displaying the frames to the emulator window, disabling it has little to no effect
     # throttle enabled will run any game at the intended gameplay speed, disabling it will run the game as fast as the computer can handle
     # debug enabled will print everything that comes out of the Lua engine console
-    def __init__(self, mame_root, game_id, cheat_debugger=False, render=True, throttle=False, frame_skip=0, sound=False, debug=False):
+    def __init__(self, mame_root, game_id, cheat_debugger=False, render=True, throttle=False, frame_skip=0, sound=False, debug=False, maximize=True):
         self.logger = logging.getLogger("Console")
 
         mame_path = str(Path(mame_root).absolute())
@@ -36,6 +36,11 @@ class Console(object):
             command += " -throttle"
         else:
             command += " -nothrottle"
+
+        if maximize:
+            command += " -maximize"
+        else:
+            command += " -nomaximize"
 
         command += " -frameskip "+str(frame_skip)
 

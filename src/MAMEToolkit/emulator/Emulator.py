@@ -3,8 +3,6 @@ import tempfile
 from MAMEToolkit.emulator.Console import Console
 from MAMEToolkit.emulator.pipes import Pipe
 from MAMEToolkit.emulator.pipes import DataPipe
-from MAMEToolkit.emulator.BitmapFormat import BitmapFormat
-
 
 # Converts a list of action Enums into the relevant Lua engine representation
 def actions_to_string(actions):
@@ -45,16 +43,15 @@ class Emulator(object):
     # memory_addresses - The internal memory addresses of the game which this class will return the value of at every time step
     # frame_ratio - the ratio of frames that will be returned, 3 means 1 out of every 3 frames will be returned. Note that his also effects how often memory addresses are read and actions are sent
     # See console for render, throttle & debug
-    def __init__(self, env_id, mame_root, game_id, memory_addresses, frame_ratio=3, render=True, throttle=False, frame_skip=0, sound=False, debug=False):
+    def __init__(self, env_id, mame_root, game_id, memory_addresses, frame_ratio=3, render=True, throttle=False, frame_skip=0, sound=False, debug=False, maximize=False):
         self.memory_addresses = memory_addresses
         self.frame_ratio = frame_ratio
 
         # setup lua engine
-        self.console = Console(mame_root, game_id, render=render, throttle=throttle, frame_skip=frame_skip, sound=sound, debug=debug)
+        self.console = Console(mame_root, game_id, render=render, throttle=throttle, frame_skip=frame_skip, sound=sound, debug=debug, maximize=maximize)
         atexit.register(self.close)
         self.wait_for_resource_registration()
         self.create_lua_variables()
-        bitmap_format = BitmapFormat.ARGB32
         screen_width = self.setup_screen_width()
         screen_height = self.setup_screen_height()
         self.screenDims = {"width": screen_width, "height": screen_height}
@@ -64,7 +61,7 @@ class Emulator(object):
         self.actionPipe = Pipe(env_id, "action", 'w', pipes_path)
         self.actionPipe.open(self.console)
 
-        self.dataPipe = DataPipe(env_id, self.screenDims, bitmap_format, memory_addresses, pipes_path)
+        self.dataPipe = DataPipe(env_id, self.screenDims, memory_addresses, pipes_path)
         self.dataPipe.open(self.console)
 
         # Connect inter process communication
